@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { login } from "@/lib/api";
 export default function LoginForm() {
     const router = useRouter();
     const { toast } = useToast();
@@ -38,18 +39,17 @@ export default function LoginForm() {
         }
         setIsLoading(true);
         try {
-            // Simulate API call
-            await new Promise((resolve) => setTimeout(resolve, 1500));
+            const response = await login(formData.email, formData.password);
             toast({
                 title: "Success!",
-                description: "You have been logged in successfully.",
+                description: response.message || "You have been logged in successfully.",
             });
             router.push("/dashboard");
         }
         catch (error) {
             toast({
                 title: "Error",
-                description: "Failed to log in. Please try again.",
+                description: error.message || "Failed to log in. Please try again.",
                 variant: "destructive",
             });
         }

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { signup } from "@/lib/api";
 export default function SignupForm() {
     const router = useRouter();
     const { toast } = useToast();
@@ -30,11 +31,8 @@ export default function SignupForm() {
         if (!formData.password) {
             newErrors.password = "Password is required";
         }
-        else if (formData.password.length < 8) {
-            newErrors.password = "Password must be at least 8 characters";
-        }
-        else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
-            newErrors.password = "Password must contain uppercase, lowercase, and numbers";
+        else if (formData.password.length < 6) {
+            newErrors.password = "Password must be at least 6 characters";
         }
         if (formData.password !== formData.confirmPassword) {
             newErrors.confirmPassword = "Passwords do not match";
@@ -49,18 +47,18 @@ export default function SignupForm() {
         }
         setIsLoading(true);
         try {
-            // Simulate API call
-            await new Promise((resolve) => setTimeout(resolve, 1500));
+            // Backend only expects email and password
+            const response = await signup(formData.email, formData.password);
             toast({
                 title: "Account created!",
-                description: "Welcome! Your account has been created successfully.",
+                description: response.message || "Welcome! Your account has been created successfully.",
             });
             router.push("/dashboard");
         }
         catch (error) {
             toast({
                 title: "Error",
-                description: "Failed to create account. Please try again.",
+                description: error.message || "Failed to create account. Please try again.",
                 variant: "destructive",
             });
         }
