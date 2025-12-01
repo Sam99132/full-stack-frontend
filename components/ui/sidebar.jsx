@@ -28,8 +28,8 @@ function useSidebar() {
 function SidebarProvider({ defaultOpen = true, open: openProp, onOpenChange: setOpenProp, className, style, children, ...props }) {
     const isMobile = useIsMobile();
     const [openMobile, setOpenMobile] = React.useState(false);
-    // This is the internal state of the sidebar.
-    // We use openProp and setOpenProp for control from outside the component.
+    
+    
     const [_open, _setOpen] = React.useState(defaultOpen);
     const open = openProp ?? _open;
     const setOpen = React.useCallback((value) => {
@@ -40,14 +40,14 @@ function SidebarProvider({ defaultOpen = true, open: openProp, onOpenChange: set
         else {
             _setOpen(openState);
         }
-        // This sets the cookie to keep the sidebar state.
+        
         document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
     }, [setOpenProp, open]);
-    // Helper to toggle the sidebar.
+    
     const toggleSidebar = React.useCallback(() => {
         return isMobile ? setOpenMobile((open) => !open) : setOpen((open) => !open);
     }, [isMobile, setOpen, setOpenMobile]);
-    // Adds a keyboard shortcut to toggle the sidebar.
+    
     React.useEffect(() => {
         const handleKeyDown = (event) => {
             if (event.key === SIDEBAR_KEYBOARD_SHORTCUT &&
@@ -59,8 +59,8 @@ function SidebarProvider({ defaultOpen = true, open: openProp, onOpenChange: set
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [toggleSidebar]);
-    // We add a state so that we can do data-state="expanded" or "collapsed".
-    // This makes it easier to style the sidebar with Tailwind classes.
+    
+    
     const state = open ? 'expanded' : 'collapsed';
     const contextValue = React.useMemo(() => ({
         state,
@@ -104,14 +104,14 @@ function Sidebar({ side = 'left', variant = 'sidebar', collapsible = 'offcanvas'
       </Sheet>);
     }
     return (<div className="group peer text-sidebar-foreground hidden md:block" data-state={state} data-collapsible={state === 'collapsed' ? collapsible : ''} data-variant={variant} data-side={side} data-slot="sidebar">
-      {/* This is what handles the sidebar gap on desktop */}
+      {}
       <div data-slot="sidebar-gap" className={cn('relative w-(--sidebar-width) bg-transparent transition-[width] duration-200 ease-linear', 'group-data-[collapsible=offcanvas]:w-0', 'group-data-[side=right]:rotate-180', variant === 'floating' || variant === 'inset'
             ? 'group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4)))]'
             : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon)')}/>
       <div data-slot="sidebar-container" className={cn('fixed inset-y-0 z-10 hidden h-svh w-(--sidebar-width) transition-[left,right,width] duration-200 ease-linear md:flex', side === 'left'
             ? 'left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]'
             : 'right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]', 
-        // Adjust the padding for floating and inset variants.
+        
         variant === 'floating' || variant === 'inset'
             ? 'p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)+(--spacing(4))+2px)]'
             : 'group-data-[collapsible=icon]:w-(--sidebar-width-icon) group-data-[side=left]:border-r group-data-[side=right]:border-l', className)} {...props}>
@@ -163,7 +163,7 @@ function SidebarGroupLabel({ className, asChild = false, ...props }) {
 function SidebarGroupAction({ className, asChild = false, ...props }) {
     const Comp = asChild ? Slot : 'button';
     return (<Comp data-slot="sidebar-group-action" data-sidebar="group-action" className={cn('text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground absolute top-3.5 right-3 flex aspect-square w-5 items-center justify-center rounded-md p-0 outline-hidden transition-transform focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0', 
-        // Increases the hit area of the button on mobile.
+        
         'after:absolute after:-inset-2 md:after:hidden', 'group-data-[collapsible=icon]:hidden', className)} {...props}/>);
 }
 function SidebarGroupContent({ className, ...props }) {
@@ -212,7 +212,7 @@ function SidebarMenuButton({ asChild = false, isActive = false, variant = 'defau
 function SidebarMenuAction({ className, asChild = false, showOnHover = false, ...props }) {
     const Comp = asChild ? Slot : 'button';
     return (<Comp data-slot="sidebar-menu-action" data-sidebar="menu-action" className={cn('text-sidebar-foreground ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground peer-hover/menu-button:text-sidebar-accent-foreground absolute top-1.5 right-1 flex aspect-square w-5 items-center justify-center rounded-md p-0 outline-hidden transition-transform focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0', 
-        // Increases the hit area of the button on mobile.
+        
         'after:absolute after:-inset-2 md:after:hidden', 'peer-data-[size=sm]/menu-button:top-1', 'peer-data-[size=default]/menu-button:top-1.5', 'peer-data-[size=lg]/menu-button:top-2.5', 'group-data-[collapsible=icon]:hidden', showOnHover &&
             'peer-data-[active=true]/menu-button:text-sidebar-accent-foreground group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 md:opacity-0', className)} {...props}/>);
 }
@@ -220,7 +220,7 @@ function SidebarMenuBadge({ className, ...props }) {
     return (<div data-slot="sidebar-menu-badge" data-sidebar="menu-badge" className={cn('text-sidebar-foreground pointer-events-none absolute right-1 flex h-5 min-w-5 items-center justify-center rounded-md px-1 text-xs font-medium tabular-nums select-none', 'peer-hover/menu-button:text-sidebar-accent-foreground peer-data-[active=true]/menu-button:text-sidebar-accent-foreground', 'peer-data-[size=sm]/menu-button:top-1', 'peer-data-[size=default]/menu-button:top-1.5', 'peer-data-[size=lg]/menu-button:top-2.5', 'group-data-[collapsible=icon]:hidden', className)} {...props}/>);
 }
 function SidebarMenuSkeleton({ className, showIcon = false, ...props }) {
-    // Random width between 50 to 90%.
+    
     const width = React.useMemo(() => {
         return `${Math.floor(Math.random() * 40) + 50}%`;
     }, []);

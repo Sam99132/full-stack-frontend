@@ -11,26 +11,39 @@ export default function DashboardPage() {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    const [orders, setOrders] = useState([]);
+
     useEffect(() => {
-        // Check if user is authenticated
+        
         const token = getToken();
         if (!token) {
             router.push("/login");
             return;
         }
 
-        // Decode JWT token to get user info (basic decode without verification)
+        
         try {
             const payload = JSON.parse(atob(token.split('.')[1]));
             setUser({
                 email: payload.email,
                 userId: payload.userId,
             });
+            fetchOrders();
         } catch (error) {
             console.error("Error decoding token:", error);
         }
         setLoading(false);
     }, [router]);
+
+    const fetchOrders = async () => {
+        try {
+            const { getOrders } = require("@/lib/api");
+            const data = await getOrders();
+            setOrders(data);
+        } catch (error) {
+            console.error("Failed to fetch orders:", error);
+        }
+    };
 
     const handleLogout = () => {
         removeToken();
@@ -48,115 +61,101 @@ export default function DashboardPage() {
         );
     }
 
+    const totalSpent = orders.reduce((sum, order) => sum + parseFloat(order.total), 0);
+
     return (
         <main className="min-h-screen bg-gradient-to-br from-background to-muted p-4 md:p-8">
-            <div className="max-w-4xl mx-auto space-y-8">
-                {/* Success Header */}
-                <Card className="p-8 bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20">
-                    <div className="flex items-start justify-between">
-                        <div className="space-y-4">
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-primary/20 rounded-full">
-                                    <CheckCircle2 className="h-8 w-8 text-primary" />
-                                </div>
-                                <div>
-                                    <h1 className="text-4xl font-bold text-foreground">Welcome!</h1>
-                                    <p className="text-muted-foreground mt-1">You have successfully logged in</p>
-                                </div>
-                            </div>
-                        </div>
-                        <Button onClick={handleLogout} variant="outline" className="gap-2">
-                            <LogOut className="h-4 w-4" />
-                            Logout
-                        </Button>
+            <div className="max-w-6xl mx-auto space-y-8">
+                {}
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h1 className="text-4xl font-bold text-foreground">Dashboard</h1>
+                        <p className="text-muted-foreground mt-1">Welcome back, {user?.email}</p>
                     </div>
-                </Card>
-
-                {/* User Info Card */}
-                {user && (
-                    <Card className="p-6">
-                        <div className="flex items-center gap-3 mb-6">
-                            <div className="p-3 bg-primary/10 rounded-full">
-                                <User className="h-6 w-6 text-primary" />
-                            </div>
-                            <h2 className="text-2xl font-semibold text-foreground">Account Information</h2>
-                        </div>
-                        <div className="space-y-4">
-                            <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg">
-                                <Mail className="h-5 w-5 text-muted-foreground" />
-                                <div>
-                                    <p className="text-sm text-muted-foreground">Email Address</p>
-                                    <p className="font-medium text-foreground">{user.email}</p>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg">
-                                <User className="h-5 w-5 text-muted-foreground" />
-                                <div>
-                                    <p className="text-sm text-muted-foreground">User ID</p>
-                                    <p className="font-medium text-foreground">{user.userId}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </Card>
-                )}
-
-                {/* Quick Actions */}
-                <div>
-                    <h2 className="text-2xl font-semibold text-foreground mb-6">Quick Actions</h2>
-                    <div className="grid md:grid-cols-3 gap-6">
-                        <Card className="p-6 space-y-4 hover:shadow-lg transition-shadow cursor-pointer">
-                            <div className="p-3 bg-primary/10 rounded-lg w-fit">
-                                <User className="h-6 w-6 text-primary" />
-                            </div>
-                            <div>
-                                <h3 className="font-semibold text-foreground mb-1">Profile</h3>
-                                <p className="text-sm text-muted-foreground">View and manage your profile information</p>
-                            </div>
-                            <Button variant="outline" className="w-full">
-                                View Profile
-                            </Button>
-                        </Card>
-
-                        <Card className="p-6 space-y-4 hover:shadow-lg transition-shadow cursor-pointer">
-                            <div className="p-3 bg-primary/10 rounded-lg w-fit">
-                                <Calendar className="h-6 w-6 text-primary" />
-                            </div>
-                            <div>
-                                <h3 className="font-semibold text-foreground mb-1">Settings</h3>
-                                <p className="text-sm text-muted-foreground">Update your account preferences</p>
-                            </div>
-                            <Button variant="outline" className="w-full">
-                                Go to Settings
-                            </Button>
-                        </Card>
-
-                        <Card className="p-6 space-y-4 hover:shadow-lg transition-shadow cursor-pointer">
-                            <div className="p-3 bg-primary/10 rounded-lg w-fit">
-                                <Mail className="h-6 w-6 text-primary" />
-                            </div>
-                            <div>
-                                <h3 className="font-semibold text-foreground mb-1">Support</h3>
-                                <p className="text-sm text-muted-foreground">Get help and contact support team</p>
-                            </div>
-                            <Button variant="outline" className="w-full">
-                                Contact Support
-                            </Button>
-                        </Card>
-                    </div>
+                    <Button onClick={handleLogout} variant="outline" className="gap-2">
+                        <LogOut className="h-4 w-4" />
+                        Logout
+                    </Button>
                 </div>
 
-                {/* Success Message */}
-                <Card className="p-6 bg-green-500/10 border-green-500/20">
-                    <div className="flex items-center gap-3">
-                        <CheckCircle2 className="h-5 w-5 text-green-500" />
-                        <div>
-                            <p className="font-medium text-foreground">Authentication Successful</p>
-                            <p className="text-sm text-muted-foreground mt-1">
-                                Your session is active. You can now access all features.
-                            </p>
+                {}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <Card className="p-6 space-y-2">
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                            <Calendar className="h-4 w-4" />
+                            <span className="text-sm font-medium">Total Orders</span>
+                        </div>
+                        <p className="text-3xl font-bold">{orders.length}</p>
+                    </Card>
+                    <Card className="p-6 space-y-2">
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                            <CheckCircle2 className="h-4 w-4" />
+                            <span className="text-sm font-medium">Total Spent</span>
+                        </div>
+                        <p className="text-3xl font-bold">${totalSpent.toFixed(2)}</p>
+                    </Card>
+                    <Card className="p-6 space-y-2">
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                            <User className="h-4 w-4" />
+                            <span className="text-sm font-medium">Account Status</span>
+                        </div>
+                        <p className="text-3xl font-bold text-green-500">Active</p>
+                    </Card>
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-8">
+                    {}
+                    <div className="md:col-span-2 space-y-6">
+                        <h2 className="text-2xl font-semibold">Recent Orders</h2>
+                        {orders.length === 0 ? (
+                            <Card className="p-8 text-center text-muted-foreground">
+                                <p>No orders yet.</p>
+                                <Button variant="link" onClick={() => router.push('/products')}>Start Shopping</Button>
+                            </Card>
+                        ) : (
+                            <div className="space-y-4">
+                                {orders.slice(0, 5).map(order => (
+                                    <Card key={order.id} className="p-6 flex justify-between items-center">
+                                        <div>
+                                            <p className="font-medium">Order #{order.id}</p>
+                                            <p className="text-sm text-muted-foreground">{new Date(order.createdAt).toLocaleDateString()}</p>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="font-bold">${parseFloat(order.total).toFixed(2)}</p>
+                                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                {order.status}
+                                            </span>
+                                        </div>
+                                    </Card>
+                                ))}
+                                {orders.length > 5 && (
+                                    <Button variant="outline" className="w-full" onClick={() => router.push('/orders')}>
+                                        View All Orders
+                                    </Button>
+                                )}
+                            </div>
+                        )}
+                    </div>
+
+                    {}
+                    <div className="space-y-6">
+                        <h2 className="text-2xl font-semibold">Quick Actions</h2>
+                        <div className="space-y-4">
+                            <Card className="p-4 hover:bg-muted/50 transition-colors cursor-pointer" onClick={() => router.push('/products')}>
+                                <h3 className="font-medium mb-1">Browse Products</h3>
+                                <p className="text-sm text-muted-foreground">Discover our latest collection</p>
+                            </Card>
+                            <Card className="p-4 hover:bg-muted/50 transition-colors cursor-pointer" onClick={() => router.push('/cart')}>
+                                <h3 className="font-medium mb-1">View Cart</h3>
+                                <p className="text-sm text-muted-foreground">Check your shopping cart</p>
+                            </Card>
+                            <Card className="p-4 hover:bg-muted/50 transition-colors cursor-pointer" onClick={() => router.push('/profile')}>
+                                <h3 className="font-medium mb-1">Profile Settings</h3>
+                                <p className="text-sm text-muted-foreground">Update your information</p>
+                            </Card>
                         </div>
                     </div>
-                </Card>
+                </div>
             </div>
         </main>
     );
