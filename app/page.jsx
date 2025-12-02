@@ -1,12 +1,13 @@
 "use client";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { ArrowRight, ShoppingBag, ShieldCheck, Truck, Clock } from "lucide-react";
 
 export default function Home() {
     return (
         <main className="min-h-screen">
-            {}
+            { }
             <section className="relative h-[90vh] flex items-center justify-center overflow-hidden bg-background">
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/20 via-background to-background z-0"></div>
                 <div className="container px-4 mx-auto relative z-10 text-center">
@@ -22,18 +23,22 @@ export default function Home() {
                             Quality, style, and innovation in every item.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                            <Button asChild size="lg" className="text-lg h-12 px-8 rounded-full shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all">
-                                <Link href="/products">
-                                    Start Shopping <ArrowRight className="ml-2 h-5 w-5" />
-                                </Link>
-                            </Button>
-                            <Button asChild variant="outline" size="lg" className="text-lg h-12 px-8 rounded-full border-2 hover:bg-secondary/50">
-                                <Link href="/about">Learn More</Link>
-                            </Button>
+                            <Link
+                                href="/products"
+                                className={cn(buttonVariants({ size: "lg" }), "text-lg h-12 px-8 rounded-full shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all")}
+                            >
+                                Start Shopping <ArrowRight className="ml-2 h-5 w-5" />
+                            </Link>
+                            <Link
+                                href="/about"
+                                className={cn(buttonVariants({ variant: "outline", size: "lg" }), "text-lg h-12 px-8 rounded-full border-2 hover:bg-secondary/50")}
+                            >
+                                Learn More
+                            </Link>
                         </div>
                     </div>
 
-                    {}
+                    { }
                     <div className="absolute top-1/2 left-10 hidden lg:block animate-float opacity-50">
                         <div className="glass p-4 rounded-2xl">
                             <ShoppingBag className="h-8 w-8 text-primary" />
@@ -47,7 +52,7 @@ export default function Home() {
                 </div>
             </section>
 
-            {}
+            { }
             <section className="py-24 bg-muted/30">
                 <div className="container px-4 mx-auto">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -76,7 +81,7 @@ export default function Home() {
                 </div>
             </section>
 
-            {}
+            { }
             <section className="py-24 relative overflow-hidden">
                 <div className="absolute inset-0 bg-primary/5 -skew-y-3 transform origin-top-left scale-110"></div>
                 <div className="container px-4 mx-auto relative z-10 text-center">
@@ -84,11 +89,12 @@ export default function Home() {
                     <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
                         Join thousands of satisfied customers who have found their perfect products with Novacart.
                     </p>
-                    <Button asChild size="lg" className="text-lg h-14 px-10 rounded-full shadow-xl shadow-primary/20 hover:shadow-primary/40 transition-all">
-                        <Link href="/signup">
-                            Create Your Account
-                        </Link>
-                    </Button>
+                    <Link
+                        href="/signup"
+                        className={cn(buttonVariants({ size: "lg" }), "text-lg h-14 px-10 rounded-full shadow-xl shadow-primary/20 hover:shadow-primary/40 transition-all")}
+                    >
+                        Create Your Account
+                    </Link>
                 </div>
             </section>
         </main>
