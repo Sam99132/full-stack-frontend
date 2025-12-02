@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { getProducts } from "@/lib/api";
 import ProductCard from "@/components/product-card";
 import { Input } from "@/components/ui/input";
@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
-export default function ProductsPage() {
+function ProductsContent() {
     const searchParams = useSearchParams();
     const category = searchParams.get("category");
 
@@ -20,15 +20,15 @@ export default function ProductsPage() {
 
     useEffect(() => {
         fetchProducts();
-    }, [page, search, category]); 
+    }, [page, search, category]);
 
     const fetchProducts = async () => {
         setLoading(true);
         try {
-            
+
             const query = new URLSearchParams({
                 page,
-                limit: 8, 
+                limit: 8,
             });
 
             if (search) {
@@ -56,10 +56,10 @@ export default function ProductsPage() {
         }
     };
 
-    
+
     useEffect(() => {
         const timer = setTimeout(() => {
-            setPage(1); 
+            setPage(1);
             fetchProducts();
         }, 500);
         return () => clearTimeout(timer);
@@ -108,7 +108,7 @@ export default function ProductsPage() {
                         ))}
                     </div>
 
-                    {}
+                    { }
                     {totalPages > 1 && (
                         <div className="flex justify-center gap-2 mt-8">
                             <Button
@@ -133,5 +133,17 @@ export default function ProductsPage() {
                 </>
             )}
         </main>
+    );
+}
+
+export default function ProductsPage() {
+    return (
+        <Suspense fallback={
+            <div className="flex justify-center items-center min-h-screen">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+            </div>
+        }>
+            <ProductsContent />
+        </Suspense>
     );
 }
