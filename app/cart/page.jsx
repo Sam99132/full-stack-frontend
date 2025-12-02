@@ -15,10 +15,10 @@ export default function CartPage() {
     const router = useRouter();
 
     useEffect(() => {
-        
+
         setCart(getCart());
 
-        
+
         const handleCartUpdate = () => setCart(getCart());
         window.addEventListener('cart-updated', handleCartUpdate);
 
@@ -41,7 +41,7 @@ export default function CartPage() {
 
         setLoading(true);
         try {
-            
+
             const orderItems = cart.map(item => ({
                 productId: item.id,
                 quantity: item.quantity,
@@ -87,7 +87,7 @@ export default function CartPage() {
             <h1 className="text-3xl font-bold mb-8">Shopping Cart</h1>
 
             <div className="grid lg:grid-cols-3 gap-8">
-                {}
+                { }
                 <div className="lg:col-span-2 space-y-4">
                     {cart.map((item) => (
                         <div key={item.id} className="flex gap-4 p-4 border rounded-lg bg-card shadow-sm">
@@ -144,7 +144,7 @@ export default function CartPage() {
                     ))}
                 </div>
 
-                {}
+                { }
                 <div className="lg:col-span-1">
                     <div className="border rounded-lg p-6 bg-card shadow-sm sticky top-4">
                         <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
@@ -170,10 +170,10 @@ export default function CartPage() {
                         <Button
                             className="w-full"
                             size="lg"
-                            onClick={handleCheckout}
+                            onClick={() => router.push('/checkout')}
                             disabled={loading}
                         >
-                            {loading ? "Processing..." : "Checkout"}
+                            Proceed to Checkout
                         </Button>
                     </div>
                 </div>
